@@ -12,6 +12,8 @@
 # for repo in g.get_user().get_repos():
 #     print(repo.name)
 
+import requests
+from bs4 import BeautifulSoup
 
 
 def process_query(query):
@@ -42,6 +44,58 @@ def url_builder(query):
                                                         locations_line,
                                                         type_line)
     return url
+
+
+
+#* Part 2 - Scrape the Github Search Results Page
+
+# On the Github search results page, we want to scrape the following information for each user:
+
+# all the data is contained in the div with the class "d-flex hx_hit-user px-0 Box-row"
+#     - User's Actual Name (if available)
+#     - username on GitHub
+#     - user url
+#     - user image url
+#     - user description
+#     - user location
+#     - user email (if available)
+
+def scrape_github_search_results(url):
+    # get the html
+    html = requests.get(url).text
+    # create a soup object
+    soup = BeautifulSoup(html, 'html.parser')
+    # find all the divs with the class "d-flex hx_hit-user px-0 Box-row"
+    user_divs = soup.find_all('div', {'class': 'd-flex hx_hit-user px-0 Box-row'})
+    # create a list to store the data
+    users = []
+    # loop through each div
+    for div in user_divs:
+        # create a dictionary to store the data for each user
+        user = {}
+        # get the user's actual name
+        user['name'] = div.find('div', {'class': 'f4 text-normal'}).text.strip()
+        # get the username
+        user['username'] = div.find('div', {'class': 'f4 text-normal'}).find('a').text.strip()
+        # get the user url
+        user['url'] = 'https://github.com' + div.find('div', {'class': 'f4 text-normal'}).find('a')['href']
+        # get the user image url
+        user['image_url'] = div.find('img')['src']
+        # get the user description
+        user['description'] = div.find('p', {'class': 'f4 text-normal mb-1'}).text.strip()
+        # get the user location
+        user['location'] = div.find('p', {'class': 'f4 text-normal mb-1'}).find('span', {'class': 'd-inline-block ml-2'}).text.strip()
+        # get the user email
+        user['email'] = div.find('p', {'class': 'f4 text-normal mb-1'}).find('a').text.strip()
+        # append the user dictionary to the users list
+        users.append(user)
+    return users
+
+
+
+
+
+
 
 def main():
     query = 'data science'
