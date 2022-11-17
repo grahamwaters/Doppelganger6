@@ -13,6 +13,8 @@
 #     print(repo.name)
 
 import requests
+import re
+import pandas as pd
 from bs4 import BeautifulSoup
 
 
@@ -62,8 +64,12 @@ def url_builder(query):
 
 def scrape_github_search_results(url):
     # get the html
-    html = requests.get(url).text
+    # html = requests.get(url).text
     # create a soup object
+    # read the html file saved in the data folder for these tests
+    with open('./data/testpage.html', 'r') as f:
+        html = f.read()
+
     soup = BeautifulSoup(html, 'html.parser')
     # find all the divs with the class "d-flex hx_hit-user px-0 Box-row"
     user_divs = soup.find_all('div', {'class': 'd-flex hx_hit-user px-0 Box-row'})
@@ -73,21 +79,27 @@ def scrape_github_search_results(url):
     for div in user_divs:
         # create a dictionary to store the data for each user
         user = {}
-        # get the user's actual name
-        user['name'] = div.find('div', {'class': 'f4 text-normal'}).text.strip()
-        # get the username
-        user['username'] = div.find('div', {'class': 'f4 text-normal'}).find('a').text.strip()
+        # get the user's username
+        temp_text = div.find('div', {'class': 'f4 text-normal'}).text.strip()
+        # replace the \xa0 with a space and the \n with nothing (remove the newline) and strip the whitespace from the ends
+        user['username'] = temp_text.replace('\xa0', ' ').replace('\n', ',').strip().split(',')[-1]
+        # get the users name
+        user['Name'] = div.find('div', {'class': 'f4 text-normal'}).find('a').text.strip()
         # get the user url
         user['url'] = 'https://github.com' + div.find('div', {'class': 'f4 text-normal'}).find('a')['href']
         # get the user image url
         user['image_url'] = div.find('img')['src']
-        # get the user description
-        user['description'] = div.find('p', {'class': 'f4 text-normal mb-1'}).text.strip()
-        # get the user location
-        user['location'] = div.find('p', {'class': 'f4 text-normal mb-1'}).find('span', {'class': 'd-inline-block ml-2'}).text.strip()
-        # get the user email
-        user['email'] = div.find('p', {'class': 'f4 text-normal mb-1'}).find('a').text.strip()
-        # append the user dictionary to the users list
+        # get the user description (if available) - this is in the <p> tag with the class containing mb-1
+        try:
+            user['description'] = div.find('p', {'class': re.compile('mb-1')}).text.strip()
+        except:
+            user['description'] = 'no description'
+        # get the user location (if available)
+        # the user's location is the first div class beneath the div with class "d-flex flex-wrap text-small color-fg-muted" (if available)
+        try:
+            user['location'] = div.find('div', {'class': 'd-flex flex-wrap text-small color-fg-muted'}).find_all('div')[0].text.strip()
+        except AttributeError:
+            user['location'] = 'none' # if the user's location is not available, set it to 'none'
         users.append(user)
     return users
 
@@ -101,6 +113,11 @@ def main():
     query = 'data science'
     url = url_builder(query)
     print(url)
+    users = scrape_github_search_results(url)
+    # save the data to a csv file
+    df = pd.DataFrame(users)
+    df.to_csv('./data/github_users.csv', index=False)
+
 
 if __name__ == '__main__':
     main()
