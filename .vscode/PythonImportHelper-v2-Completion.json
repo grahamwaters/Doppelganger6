@@ -1,0 +1,143 @@
+[
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "ZipFile",
+        "importPath": "zipfile",
+        "description": "zipfile",
+        "isExtraImport": true,
+        "detail": "zipfile",
+        "documentation": {}
+    },
+    {
+        "label": "BeautifulSoup",
+        "importPath": "bs4",
+        "description": "bs4",
+        "isExtraImport": true,
+        "detail": "bs4",
+        "documentation": {}
+    },
+    {
+        "label": "tqdm",
+        "importPath": "tqdm",
+        "description": "tqdm",
+        "isExtraImport": true,
+        "detail": "tqdm",
+        "documentation": {}
+    },
+    {
+        "label": "spacy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "spacy",
+        "description": "spacy",
+        "detail": "spacy",
+        "documentation": {}
+    },
+    {
+        "label": "get_companies_and_orgs",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def get_companies_and_orgs(query):\n    # get the entities from the query\n    doc = nlp(query)\n    # get the entities from the query that are businesses\n    entities = [X.text for X in doc.ents if X.label_ in ['GPE']] # gets the entities that are businesses\n    return entities\ndef top_companies(industry=None):\n    # constants\n    memory_save_mode = False\n    # read in the data",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "top_companies",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def top_companies(industry=None):\n    # constants\n    memory_save_mode = False\n    # read in the data\n    if os.path.exists('./data/top_10000_tech_companies.csv'):\n        try:\n            print(\"Loading data for the top 7+ million tech companies in the US as of 2022...\")\n            df = pd.read_csv('./data/top_10000_tech_companies.csv')\n        except Exception as e:\n            print(e)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "process_query",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def process_query(query):\n    return str(query).replace(' ', '+').lower()\ndef url_builder(query):\n    query_line = process_query(query)\n    extensions = ['py','ipynb','md'] # replace spaces here with extension%3A\n    extensions = ['extension%3A' + ext for ext in extensions]\n    extension_line = ''.join(extensions) # join extensions with .join\n    locations = ['Austin'] # replace spaces here with location%3A\n    locations = ['location%3A' + str(x) for x in locations if x != '']\n    locations_line = ''.join(locations) # join locations with .join",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "url_builder",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def url_builder(query):\n    query_line = process_query(query)\n    extensions = ['py','ipynb','md'] # replace spaces here with extension%3A\n    extensions = ['extension%3A' + ext for ext in extensions]\n    extension_line = ''.join(extensions) # join extensions with .join\n    locations = ['Austin'] # replace spaces here with location%3A\n    locations = ['location%3A' + str(x) for x in locations if x != '']\n    locations_line = ''.join(locations) # join locations with .join\n    sort_type = 'o=desc&' # sort by most followers\n    # page_num = '&p=2' # page number",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "industry_filterer",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def industry_filterer(string_to_find,other_string=None):\n    # read in the industries.csv file\n    industries_df = pd.read_csv('./data/industries.csv')\n    # only include the unique industries\n    industries_df = industries_df.drop_duplicates(subset=['industry'])\n    # reset the index\n    industries_df = industries_df.reset_index(drop=True)\n    # filter to get only tech companies or nonprofits\n    if other_string is None:\n        industries_df = industries_df[industries_df['industry'].str.contains(string_to_find, case=False)]",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "scrape_github_search_results",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def scrape_github_search_results(url, companies):\n    # get the html\n    # html = requests.get(url).text\n    # create a soup object\n    # read the html file saved in the data folder for these tests\n    print(\"Scraping the Github search results page...\")\n    with open('./data/testpage.html', 'r') as filetoread:\n        html = filetoread.read() # read the html file saved in the data folder for these tests\n    soup = BeautifulSoup(html, 'html.parser')\n    # find all the divs with the class \"d-flex hx_hit-user px-0 Box-row\"",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "top_company_preprocessing",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def top_company_preprocessing():\n    # load top companies from csv into memory.\n    top_companies()\n    # make a list of the companies\n    top_companies_df = pd.read_csv('./data/top_10000_tech_companies.csv').rename(columns={'name': 'company_name'}) #  read the csv file into a dataframe and rename the column 'name' to 'company_name' for clarity\n    list_of_companies = list(top_companies_df['company_name'].unique()) # make a list of the companies\n    # create a list to store the data\n    return list_of_companies\ndef main():\n    list_of_companies = top_company_preprocessing() # companies in the chosen industries",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def main():\n    list_of_companies = top_company_preprocessing() # companies in the chosen industries\n    # in this case 'tech' and 'nonprofit'\n    query = 'data science'\n    url = url_builder(query)\n    users = scrape_github_search_results(url, list_of_companies)\n    # save the data to a csv file\n    df = pd.DataFrame(users)\n    df.to_csv('./data/github_users.csv', index=False)\nif __name__ == '__main__':",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "nlp",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "nlp = spacy.load('en_core_web_md')\ndef get_companies_and_orgs(query):\n    # get the entities from the query\n    doc = nlp(query)\n    # get the entities from the query that are businesses\n    entities = [X.text for X in doc.ents if X.label_ in ['GPE']] # gets the entities that are businesses\n    return entities\ndef top_companies(industry=None):\n    # constants\n    memory_save_mode = False",
+        "detail": "main",
+        "documentation": {}
+    }
+]
