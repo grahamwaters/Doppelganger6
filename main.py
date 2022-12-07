@@ -2,8 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import time
-# Helper Functions
+import pandas as pd
+# configparser
+import configparser
 
+
+# Helper Functios
 def get_profile_links(soup):
     """
     get_profile_links is a function that takes in a BeautifulSoup object and returns a list of profile links.
@@ -82,6 +86,19 @@ def main():
     :rtype: None
     """
 
+    # read your profile to an html file and save it to the data folder.
+    # the profile url is in the config.ini file
+    # read the config.ini file
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    profile_url = config['default']['secondary_url']
+    print('profile_url: ', profile_url, ' loaded from config.ini file')
+
+
+
+
+
+
     # begin by making a request to the website with the search query
     job_title = 'Data Scientist'
     company_target = 'IBM'
@@ -106,7 +123,7 @@ def main():
         # do not make a request if the html is already downloaded and saved. this is located in the data/{company}/{job_title} folder
         # check if the file exists
 
-        if not os.path.exists(f'data/{company_target}/{job_title}/{link["href"][1:]}.html'):
+        if not os.path.exists(f'./data/{company_target}/{job_title}/{link["href"][1:]}.html'):
             response = requests.get(profile_link)
             # this object contains (1) the status code of the request and (2) the content of the request (the HTML).
             page_response = response.status_code

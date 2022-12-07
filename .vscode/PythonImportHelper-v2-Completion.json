@@ -35,6 +35,24 @@
         "documentation": {}
     },
     {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "configparser",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "configparser",
+        "description": "configparser",
+        "detail": "configparser",
+        "documentation": {}
+    },
+    {
         "label": "get_profile_links",
         "kind": 2,
         "importPath": "main",
@@ -75,7 +93,7 @@
         "kind": 2,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "def main():\n    \"\"\"\n    main is the main function of the program.\n    :return: None\n    :rtype: None\n    \"\"\"\n    # begin by making a request to the website with the search query\n    job_title = 'Data Scientist'\n    company_target = 'IBM'\n    # use the process_page function to get the profile links",
+        "peekOfCode": "def main():\n    \"\"\"\n    main is the main function of the program.\n    :return: None\n    :rtype: None\n    \"\"\"\n    # read your profile to an html file and save it to the data folder.\n    # the profile url is in the config.ini file\n    # read the config.ini file\n    config = configparser.ConfigParser()",
         "detail": "main",
         "documentation": {}
     }
