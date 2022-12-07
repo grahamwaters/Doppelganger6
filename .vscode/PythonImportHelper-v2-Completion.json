@@ -43,6 +43,14 @@
         "documentation": {}
     },
     {
+        "label": "BeautifulSoup",
+        "importPath": "bs4",
+        "description": "bs4",
+        "isExtraImport": true,
+        "detail": "bs4",
+        "documentation": {}
+    },
+    {
         "label": "tqdm",
         "importPath": "tqdm",
         "description": "tqdm",
@@ -57,6 +65,24 @@
         "importPath": "spacy",
         "description": "spacy",
         "detail": "spacy",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "time",
+        "description": "time",
+        "detail": "time",
         "documentation": {}
     },
     {
@@ -138,6 +164,51 @@
         "description": "main",
         "peekOfCode": "nlp = spacy.load('en_core_web_md')\ndef get_companies_and_orgs(query):\n    # get the entities from the query\n    doc = nlp(query)\n    # get the entities from the query that are businesses\n    entities = [X.text for X in doc.ents if X.label_ in ['GPE']] # gets the entities that are businesses\n    return entities\ndef top_companies(industry=None):\n    # constants\n    memory_save_mode = False",
         "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "get_profile_links",
+        "kind": 2,
+        "importPath": "main_file",
+        "description": "main_file",
+        "peekOfCode": "def get_profile_links(soup):\n    \"\"\"\n    get_profile_links is a function that takes in a BeautifulSoup object and returns a list of profile links.\n    :param soup: BeautifulSoup object\n    :type soup: BeautifulSoup\n    :return: list of profile links\n    :rtype: list\n    \"\"\"\n    links = soup.find_all('a', class_='mr-1')\n    return links",
+        "detail": "main_file",
+        "documentation": {}
+    },
+    {
+        "label": "get_profile_data",
+        "kind": 2,
+        "importPath": "main_file",
+        "description": "main_file",
+        "peekOfCode": "def get_profile_data(soup):\n    \"\"\"\n    get_profile_data is a function that takes in a BeautifulSoup object and returns a dictionary of profile data.\n    :param soup: BeautifulSoup object\n    :type soup: BeautifulSoup\n    :return: dictionary of profile data\n    :rtype: dict\n    \"\"\"\n    data = {}\n    data['name'] = soup.find('h1', class_='h3').text",
+        "detail": "main_file",
+        "documentation": {}
+    },
+    {
+        "label": "get_profile_skills",
+        "kind": 2,
+        "importPath": "main_file",
+        "description": "main_file",
+        "peekOfCode": "def get_profile_skills(soup):\n    \"\"\"\n    get_profile_skills is a function that takes in a BeautifulSoup object and returns a list of profile skills.\n    :param soup: BeautifulSoup object\n    :type soup: BeautifulSoup\n    :return: list of profile skills\n    :rtype: list\n    \"\"\"\n    skills = soup.find_all('span', class_='badge badge-light mr-1')\n    return skills",
+        "detail": "main_file",
+        "documentation": {}
+    },
+    {
+        "label": "process_page",
+        "kind": 2,
+        "importPath": "main_file",
+        "description": "main_file",
+        "peekOfCode": "def process_page(job_title,company_target,page_number=''):\n    # begin by making a request to the website with the search query\n    # job_title = 'Data Scientist'\n    # company_target = 'IBM'\n    # create the company and title strings\n    company = company_target.replace(' ', '+')\n    job = job_title.replace(' ', '+')\n    # create the search query\n    github_search_query = 'https://github.com/search?{}q={}+{}&type=users'.format(str(page_number),company, job)\n    # make a request to the website",
+        "detail": "main_file",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "main_file",
+        "description": "main_file",
+        "peekOfCode": "def main():\n    \"\"\"\n    main is the main function of the program.\n    :return: None\n    :rtype: None\n    \"\"\"\n    # begin by making a request to the website with the search query\n    job_title = 'Data Scientist'\n    company_target = 'IBM'\n    # use the process_page function to get the profile links",
+        "detail": "main_file",
         "documentation": {}
     }
 ]
